@@ -48,13 +48,144 @@ class HybridBackend:
 """
 
     def generate_heuristic(self, prompt, data):
-        """Old stable heuristic logic (Fallback)."""
+        """Production-Grade Heuristic Engine - Edge-Optimized Intelligence"""
         low_p = prompt.lower()
+        
+        # Extract all biometrics
         state = data['health_state']
-        bedtime = "9:15 PM" if data['Stress Level'] > 7 or state == "Under-Recovered" else "10:30 PM"
-        if any(x in low_p for x in ["when", "sleep", "bed"]):
-            return f"Heuristic Analysis (Local): Your optimal bedtime tonight is **{bedtime}**."
-        return f"Heuristic Analysis: You are in a {state} zone. Prioritize bed by {bedtime}."
+        occ = str(data['Occupation'])
+        age = data['Age']
+        hr = data['Heart Rate']
+        stress = data['Stress Level']
+        sleep_dur = data['Sleep Duration']
+        sleep_quality = data['Quality of Sleep']
+        steps = data['Daily Steps']
+        activity = data['Physical Activity Level']
+        bmi = data['BMI Category']
+        gender = data['Gender']
+        
+        # Source-specific metrics
+        source = data.get('Source', 'WHOOP-Study')
+        deep = data.get('Deep_Sleep', None)
+        rem = data.get('REM_Sleep', None)
+        
+        # Dynamic time calculations
+        bedtime = "9:15 PM" if stress > 7 or state == "Under-Recovered" else "10:30 PM"
+        stop_work = "4:45 PM" if stress > 8 else "6:00 PM"
+        nap_time = "1:30 PM" if sleep_dur < 6.5 else "None recommended"
+        workout_time = "5:30 PM" if state == "Optimal" else "Light stretching only"
+        
+        # Greeting variation
+        greetings = ["Hey!", "Listen:", "Here's the plan:", "Quick update:"]
+        greeting = random.choice(greetings)
+        
+        # Source prefix
+        if source == "AppleWatch-Raw" and not pd.isna(deep):
+            prefix = f"{greeting} Your Apple Watch shows"
+        else:
+            prefix = f"{greeting} Based on your {occ} profile at age {age},"
+        
+        # ===== Primary Intent Detection =====
+        
+        # 1. Sleep & Bedtime Queries
+        if any(x in low_p for x in ["sleep", "bed", "bedtime", "rest tonight", "when should i sleep"]):
+            if sleep_dur < 6:
+                return f"{prefix} you're severely sleep-deprived ({sleep_dur}h). **Critical directive:** Lights out by **{bedtime}** sharp. No exceptions."
+            elif not pd.isna(deep) and deep < 1.2:
+                return f"{prefix} Deep Sleep is low ({deep:.1f}h). Your brain didn't get enough repair time. Target **{bedtime}** and avoid screens 1hr before."
+            else:
+                return f"{prefix} aim for **{bedtime}** tonight to maintain your {state} state. Consistency is your superpower."
+        
+        # 2. Workout & Exercise Queries
+        elif any(x in low_p for x in ["workout", "exercise", "gym", "run", "train", "lift"]):
+            if state == "Under-Recovered":
+                return f"{prefix} your body is redlining (HR: {hr}, Stress: {stress}/10). **No heavy training today.** Do light yoga or skip entirely. Sleep is your priority."
+            elif state == "Optimal":
+                return f"{prefix} you're primed! Your HR ({hr} bpm) and recovery metrics say 'go hard.' Hit the gym at **{workout_time}**. Target: High intensity."
+            else:
+                return f"{prefix} you're balanced. Moderate workout is fine (30-40 min cardio). Listen to your body and stop if HR spikes above {hr + 20}."
+        
+        # 3. Stress & Mental Health
+        elif any(x in low_p for x in ["stress", "anxious", "overwhelmed", "burnout", "mental"]):
+            if stress > 7:
+                return f"{prefix} stress is critically high ({stress}/10). **Immediate protocol:** Stop work by **{stop_work}**, 10-min meditation, and a short walk. Your nervous system needs a reset."
+            else:
+                return f"{prefix} stress is manageable ({stress}/10). Keep it stable with deep breathing breaks every 2 hours. You're doing well for a {occ}."
+        
+        # 4. Fatigue & Energy Queries
+        elif any(x in low_p for x in ["tired", "exhausted", "drained", "fatigue", "energy", "sleepy"]):
+            if sleep_dur < 6.5:
+                return f"{prefix} fatigue is expected—you only slept {sleep_dur}h. **Action:** {nap_time} nap (20 min max), water, and finish work by **{stop_work}**."
+            elif hr > 80:
+                return f"{prefix} elevated resting HR ({hr} bpm) signals stress. Hydrate, take 5-min breaks, and avoid caffeine after 2 PM."
+            else:
+                return f"{prefix} fatigue might be mental, not physical. Try a 10-min walk or switch tasks. Your biometrics are stable."
+        
+        # 5. Nap Queries
+        elif any(x in low_p for x in ["nap", "power nap", "short sleep"]):
+            if sleep_dur < 6.5:
+                return f"{prefix} a nap is recommended at **{nap_time}**. Keep it to 20 minutes max to avoid grogginess. Set an alarm."
+            else:
+                return f"{prefix} you slept {sleep_dur}h—a nap isn't necessary. If you're tired, it's likely mental fatigue. Try movement instead."
+        
+        # 6. Steps & Activity
+        elif any(x in low_p for x in ["steps", "walk", "activity", "move"]):
+            if steps < 5000:
+                return f"{prefix} you're at {steps:,} steps today. Target: 8,000 minimum for a {occ}. Try a 15-min walk after each meal."
+            elif steps > 10000:
+                return f"{prefix} great job! {steps:,} steps is excellent. Pair this with quality sleep (**{bedtime}**) for optimal recovery."
+            else:
+                return f"{prefix} {steps:,} steps is solid. You're on track for baseline health. Keep moving throughout the day."
+        
+        # 7. Work & Productivity
+        elif any(x in low_p for x in ["work", "productivity", "focus", "concentration", "stop working"]):
+            if stress > 7:
+                return f"{prefix} your stress ({stress}/10) is too high for peak productivity. **Hard stop:** **{stop_work}**. Quality > quantity."
+            else:
+                return f"{prefix} you can work until **{stop_work}** safely. After that, wind down to protect tomorrow's performance."
+        
+        # 8. Nutrition & Hydration
+        elif any(x in low_p for x in ["eat", "food", "nutrition", "drink", "water", "hydrate"]):
+            return f"{prefix} hydration first: aim for 2.5L water today. For a {occ} at {age}, protein-rich meals + veggies are key. Avoid heavy carbs after 7 PM."
+        
+        # 9. Heart Rate Queries
+        elif any(x in low_p for x in ["heart rate", "hr", "pulse", "bpm"]):
+            if hr > 75:
+                return f"{prefix} resting HR is elevated ({hr} bpm). This signals stress or fatigue. Prioritize rest and avoid stimulants."
+            else:
+                return f"{prefix} resting HR ({hr} bpm) is healthy. You're in good cardiovascular shape for age {age}."
+        
+        # 10. Recovery & Health State
+        elif any(x in low_p for x in ["recover", "recovery", "health", "state", "status"]):
+            if not pd.isna(deep) and not pd.isna(rem):
+                return f"{prefix} recovery is nuanced. Deep: {deep:.1f}h, REM: {rem:.1f}h. Both are crucial. Your overall state is **{state}**. Sleep by **{bedtime}** to improve."
+            else:
+                return f"{prefix} your health state is **{state}**. Key drivers: Sleep ({sleep_dur}h), Stress ({stress}/10), HR ({hr}). Fix sleep first."
+        
+        # 11. BMI & Weight
+        elif any(x in low_p for x in ["weight", "bmi", "body", "fat"]):
+            return f"{prefix} BMI category: {bmi}. For a {gender} at {age}, focus on sleep quality and {steps:,}+ daily steps. Weight follows behavior."
+        
+        # 12. Age-Related Queries
+        elif any(x in low_p for x in ["age", "older", "younger", "aging"]):
+            return f"{prefix} at age {age}, recovery takes longer. Prioritize sleep (**{bedtime}**) and stress management more than younger peers."
+        
+        # 13. Occupation-Specific
+        elif "job" in low_p or "career" in low_p:
+            return f"{prefix} as a {occ}, your main risk is burnout. Your data shows {state}. Protect your calendar: hard stop at **{stop_work}**."
+        
+        # 14. General "How am I doing?"
+        elif any(x in low_p for x in ["how am i", "doing", "status", "overall"]):
+            return f"{prefix} you're in a **{state}** zone. Sleep: {sleep_dur}h, Stress: {stress}/10, Steps: {steps:,}. **Top priority:** Bed by **{bedtime}**."
+        
+        # 15. Default Catch-All
+        else:
+            if state == "Under-Recovered":
+                return f"{prefix} you're currently **Under-Recovered**. For a {occ}, this is a red flag. **Protocol:** Sleep by **{bedtime}**, stop work by **{stop_work}**, and avoid high-intensity activity."
+            elif state == "Optimal":
+                return f"{prefix} you're crushing it! **Optimal** state at {age} is rare. Maintain with: **{bedtime}** sleep, {steps:,}+ steps, and stress under 5."
+            else:
+                return f"{prefix} you're **{state}**—solid baseline. Keep the momentum: bed by **{bedtime}**, moderate activity, and monitor stress."
 
     def generate_ollama(self, prompt, data):
         """Local Ollama Inference with better error handling."""
