@@ -1,0 +1,16 @@
+# Data files
+pilot_clean.csv
+pilot_instructions.jsonl
+Sleep_health_and_lifestyle_dataset.csv
+applewatchhrv/
+.~lock.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Brain/Artifacts (already in restricted dir usually but good to have)
+.gemini/
