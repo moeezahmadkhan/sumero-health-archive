@@ -31,7 +31,7 @@ A privacy-first, multi-source health intelligence platform that provides **direc
 ### **Quick Start**
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone <https://github.com/moeezahmadkhan/sumero-health-archive.git
 cd archive
 
 # Install dependencies
