@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sumero Health Decision Schema",
+    "type": "object",
+    "properties": {
+        "health_state": {
+            "type": "string",
+            "enum": [
+                "Well_Recovered",
+                "Under_Recovered",
+                "Sleep_Deprived"
+            ],
+            "description": "The computed physiological state of the user"
+        },
+        "workout_allowed": {
+            "type": "boolean",
+            "description": "Is high-intensity training permitted?"
+        },
+        "recommended_bedtime": {
+            "type": "string",
+            "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "Target bedtime in HH:MM format (24h)"
+        },
+        "nap_recommended": {
+            "type": "boolean",
+            "description": "Is a power nap advised?"
+        },
+        "work_cutoff_time": {
+            "type": "string",
+            "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "Hard stop for professional work"
+        },
+        "hydration_target_liters": {
+            "type": "number",
+            "description": "Daily water intake goal"
+        },
+        "priority_focus": {
+            "type": "string",
+            "enum": [
+                "sleep",
+                "recovery",
+                "activity",
+                "balance"
+            ],
+            "description": "The single most important action for today"
+        },
+        "briefing": {
+            "type": "string",
+            "description": "Human-readable synthesis of the recovery state and directives"
+        },
+        "reason_codes": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "LOW_SLEEP",
+                    "HIGH_STRESS",
+                    "GOOD_RECOVERY",
+                    "STABLE_BASELINE"
+                ]
+            }
+        }
+    },
+    "required": [
+        "health_state",
+        "workout_allowed",
+        "priority_focus"
+    ]
+}

@@ -4,20 +4,12 @@ A privacy-first, multi-source health intelligence platform that provides **direc
 
 ## 🚀 Features
 
-### **Hybrid Intelligence Architecture**
-- **Heuristic Engine**: Production-grade rule-based system with 15+ intent categories (zero dependencies, edge-ready)
-- **Local LLM (Ollama)**: Privacy-first inference using Llama 3.2 or similar models
-- **Cloud LLM (OpenAI)**: High-performance option for advanced reasoning
-
-### **Multi-Source Data Fusion**
-- **Population Health Data**: 374+ individuals from WHOOP-style studies (Occupation, Age, Lifestyle)
-- **Apple Watch Raw Sensors**: High-resolution sleep stages (Deep, REM, Light), HRV proxy, and resting heart rate
-- **Unified Schema**: Seamlessly merges both sources for comprehensive coaching
-
-### **Proactive Coaching**
-- **Time-Specific Directives**: "Sleep by 9:15 PM sharp", "Stop work at 4:45 PM"
-- **Source-Aware**: Leverages Apple Watch precision metrics when available
-- **Context-Driven**: Uses ALL biometrics (HR, Stress, Sleep stages, Steps, Occupation, Age, Gender, BMI)
+### **Sumero Core (Deterministic V2 Engine)**
+- **Deterministic Intelligence**: Industry-grade heuristic engine in `sumero_core/` that serves as the "Sole Authority" for health decisions.
+- **Medical-Grade Calibration**: Incorporates **Blood Pressure** and **Resting Heart Rate** thresholds to detect "Silent Strain" (physiological load missed by subjective metrics).
+- **Controlled Phrasing Engine**: Replaces generative AI with human-reviewed templates for 100% explainability and safety.
+- **Contract-Driven**: Uses strict JSON/Pydantic-style schemas for inputs and decisions.
+- **Validated Accuracy**: Backtested against 374 real-world users with a verified simulation rig.
 
 ---
 
@@ -28,23 +20,18 @@ A privacy-first, multi-source health intelligence platform that provides **direc
 - (Optional) Ollama for local LLM inference
 - (Optional) OpenAI API key for cloud LLM
 
-### **Quick Start**
+### **Quick Start (V2 Core)**
 ```bash
 # Clone the repository
-git clone <https://github.com/moeezahmadkhan/sumero-health-archive.git
+git clone https://github.com/moeezahmadkhan/sumero-health-archive.git
 cd archive
 
-# Install dependencies
-pip install -r requirements.txt
+# Run the simulation rig (V2)
+python3 sumero_core/simulation.py
+```
 
-# Copy environment template
-cp .env.example .env
-
-# (Optional) Configure your API keys in .env
-# OPENAI_API_KEY=your_key_here
-# OLLAMA_MODEL=llama3.2
-
-# Run the dashboard
+### **Run Dashboard**
+```bash
 streamlit run streamlit_app.py
 ```
 
@@ -52,159 +39,52 @@ streamlit run streamlit_app.py
 
 ## 🧠 Intelligence Layers
 
-### **1. Heuristic Engine (Recommended for Edge Deployment)**
-- **Zero dependencies**, instant responses
-- Covers 15+ intent categories:
-  - Sleep & Bedtime
-  - Workout & Exercise
-  - Stress & Mental Health
-  - Fatigue & Energy
-  - Naps
-  - Steps & Activity
-  - Work & Productivity
-  - Nutrition & Hydration
-  - Heart Rate Analysis
-  - Recovery & Health State
-  - BMI & Weight Management
-  - Age-Related Guidance
-  - Occupation-Specific Risks
-  - General Status
-  - Catch-All Fallback
+### **1. Sumero Core (V2 - Recommended)**
+- **Deterministic & Auditable**: Every decision is traceable to a specific rule.
+- **Medical Calibration**: 
+    - **BP Threshold**: >135/88 triggers automatic recovery protocol.
+    - **HR Threshold**: >80 BPM (Resting) signals physiological strain.
+- **Phrasing Engine**: Uses clinical-grade templates in `phrasing.py`.
 
-### **2. Ollama (Local LLM)**
-- Privacy-first: all data stays on your machine
-- Requires: Ollama running locally (`ollama serve`)
-- Models: `llama3.2`, `qwen2.5:7b`, `mistral`
-
-### **3. OpenAI (Cloud LLM)**
-- High-performance reasoning
-- Requires: `OPENAI_API_KEY` in `.env`
-- Model: GPT-4o
+### **2. Hybrid Prototype (V1)**
+- **Heuristic Engine**: Production-grade rule-based system with 15+ intent categories.
+- **LLM Integration**: Supports local **Ollama** and cloud **OpenAI** for tone-polishing.
 
 ---
 
-## 🧪 Test Prompt Suite
+## 🧪 Test Suite & Simulation
 
-Use these prompts to validate all coaching categories:
+### **V2 Backtesting (Simulation Rig)**
+Validate the core engine against 374 users:
+```bash
+python3 sumero_core/simulation.py
+```
+- **Silent Strain Detection**: Successfully flags users with high BP even if sleep is optimal.
+- **Distribution**: Verified ~58% Optimal / ~42% Remedial across the Sleep Health dataset.
 
-### **Sleep & Bedtime**
-- "When should I sleep tonight?"
-- "What's my optimal bedtime?"
-- "I need rest, when can I go to bed?"
-
-### **Workout & Exercise**
-- "Can I workout today?"
-- "Should I hit the gym?"
-- "Is it safe to run?"
-
-### **Stress & Mental Health**
-- "I feel stressed, what should I do?"
-- "I'm feeling overwhelmed"
-- "Help me with my anxiety"
-
-### **Fatigue & Energy**
-- "I feel exhausted today"
-- "I'm so tired, what's wrong?"
-- "How can I get more energy?"
-
-### **Naps**
-- "Should I take a nap?"
-- "When's the best time for a power nap?"
-
-### **Steps & Activity**
-- "How are my steps today?"
-- "Should I walk more?"
-
-### **Work & Productivity**
-- "When should I stop working?"
-- "How long can I work today?"
-
-### **Nutrition & Hydration**
-- "What should I eat today?"
-- "How much water should I drink?"
-
-### **Heart Rate**
-- "Is my heart rate normal?"
-- "What does my HR mean?"
-
-### **Recovery & Health State**
-- "How's my recovery today?"
-- "What's my health status?"
-
-### **BMI & Weight**
-- "Is my weight healthy?"
-- "What about my BMI?"
-
-### **Age-Related**
-- "How does my age affect me?"
-
-### **Occupation-Specific**
-- "How does my job impact my health?"
-
-### **General Status**
-- "How am I doing overall?"
-- "Give me a health summary"
+### **Manual Prompts**
+Use these categories on the dashboard to test heuristic/LLM responses:
+- Sleep & Bedtime
+- Workout Readiness
+- Stress Interventions
+- Occupational Risks (Doctor, Nurse, etc.)
 
 ---
 
-## 📊 Data Pipeline
+## 📊 High-Level Architecture
 
 ```mermaid
-graph LR
-    A[Raw WHOOP Dataset] --> B[1_process_data.py]
-    C[Apple Watch CSV] --> D[1c_aggregate_apple.py]
-    B --> E[pilot_clean.csv]
-    D --> E
-    E --> F[2_generate_instructions.py]
-    F --> G[pilot_instructions.jsonl]
-    G --> H[3_train_lora.py]
-    H --> I[Fine-Tuned Model]
-    E --> J[streamlit_app.py]
-    I --> J
+graph TD
+    A[Wearable Data / CSV] --> B[Inputs Schema]
+    B --> C[Sumero Core V2]
+    C --> D[Health States Logic]
+    C --> E[Recovery Heuristics]
+    D --> F[Deterministic Decision]
+    E --> F
+    F --> G[Controlled Phrasing Engine]
+    G --> H[Human-Readable Briefing]
+    H --> I[Dashboard / Device UI]
 ```
-
-### **Pipeline Steps**
-1. **Data Cleaning**: `1_process_data.py` - Curate population health data
-2. **Apple Watch Aggregation**: `1c_aggregate_apple.py` - Process raw sensor data
-3. **Instruction Generation**: `2_generate_instructions.py` - Create training pairs (617 samples)
-4. **QLoRA Fine-Tuning**: `3_train_lora.py` - (Optional) Train custom health LLM
-5. **Inference**: `streamlit_app.py` - Live dashboard with hybrid intelligence
-
----
-
-## 🌐 Deployment
-
-### **Local Development**
-```bash
-streamlit run streamlit_app.py
-```
-Access at: `http://localhost:8501`
-
-### **Streamlit Cloud**
-1. Push to GitHub
-2. Connect at [share.streamlit.io](https://share.streamlit.io)
-3. Deploy `streamlit_app.py`
-
-### **Edge Devices (Smartbands, Embedded)**
-- Use **Heuristic Layer** only (zero dependencies)
-- No internet required
-- Sub-millisecond response time
-
-### **Ollama Server Mode**
-Run Ollama as a central server:
-```bash
-OLLAMA_HOST=0.0.0.0:11434 ollama serve
-```
-Point clients to: `http://<your-ip>:11434`
-
----
-
-## 🔐 Privacy & Security
-
-- **Local-First**: All data processing can run entirely offline
-- **No Tracking**: Zero telemetry or analytics
-- **Environment Variables**: Sensitive keys stored in `.env` (gitignored)
-- **HIPAA-Ready**: Heuristic layer has no data leakage risk
 
 ---
 
@@ -212,17 +92,17 @@ Point clients to: `http://<your-ip>:11434`
 
 ```
 archive/
-├── streamlit_app.py              # Main dashboard (Hybrid Intelligence)
-├── 1_process_data.py             # Population data cleaner
-├── 1c_aggregate_apple.py         # Apple Watch data aggregator
-├── 2_generate_instructions.py   # Training data generator
-├── 3_train_lora.py              # QLoRA fine-tuning script
-├── 4_inference.py               # Standalone inference tester
-├── pilot_clean.csv              # Unified health dataset (617 rows)
-├── pilot_instructions.jsonl     # Training pairs for LLM
+├── sumero_core/                  # Deterministic V2 Foundation
+│   ├── engine.py                 # Core Orchestrator
+│   ├── health_states.py          # State Determination Laws
+│   ├── phrasing.py               # Deterministic Language Library
+│   ├── simulation.py             # Backtesting Rig
+│   ├── data/                     # Ground Truth (374 Users)
+│   └── heuristics/               # Modular Decision Logic
+├── streamlit_app.py              # Main dashboard
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Environment template
-└── applewatchhrv/              # Raw Apple Watch data
+└── pilot_clean.csv              # Unified dataset
 ```
 
 ---

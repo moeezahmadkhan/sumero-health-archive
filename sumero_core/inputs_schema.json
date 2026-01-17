@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sumero Health Input Schema",
+    "type": "object",
+    "properties": {
+        "sleep_hours": {
+            "type": "number",
+            "description": "Total sleep duration in hours"
+        },
+        "sleep_quality": {
+            "type": "string",
+            "enum": [
+                "low",
+                "medium",
+                "high"
+            ],
+            "description": "Subjective or device-calculated quality score"
+        },
+        "resting_hr": {
+            "type": "integer",
+            "description": "Resting Heart Rate in BPM"
+        },
+        "stress_level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Daily stress score (1-10)"
+        },
+        "steps": {
+            "type": "integer",
+            "description": "Total daily step count"
+        },
+        "activity_level": {
+            "type": "string",
+            "enum": [
+                "low",
+                "moderate",
+                "high"
+            ]
+        },
+        "age": {
+            "type": "integer"
+        },
+        "occupation": {
+            "type": "string"
+        },
+        "blood_pressure": {
+            "type": "string",
+            "pattern": "^\\d{2,3}/\\d{2,3}$",
+            "description": "Blood Pressure in Sys/Dia format (e.g., 120/80)"
+        }
+    },
+    "required": [
+        "sleep_hours",
+        "stress_level",
+        "resting_hr",
+        "age"
+    ]
+}
